@@ -53,24 +53,24 @@ Action::Result Action::land() const
     return _impl->land();
 }
 
-void Action::reboot_async(const ResultCallback callback)
+void Action::reboot_async(uint32_t mav_component, const ResultCallback callback)
 {
-    _impl->reboot_async(callback);
+    _impl->reboot_async(mav_component, callback);
 }
 
-Action::Result Action::reboot() const
+Action::Result Action::reboot(uint32_t mav_component) const
 {
-    return _impl->reboot();
+    return _impl->reboot(mav_component);
 }
 
-void Action::shutdown_async(const ResultCallback callback)
+void Action::shutdown_async(uint32_t mav_component, const ResultCallback callback)
 {
-    _impl->shutdown_async(callback);
+    _impl->shutdown_async(mav_component, callback);
 }
 
-Action::Result Action::shutdown() const
+Action::Result Action::shutdown(uint32_t mav_component) const
 {
-    return _impl->shutdown();
+    return _impl->shutdown(mav_component);
 }
 
 void Action::kill_async(const ResultCallback callback)
