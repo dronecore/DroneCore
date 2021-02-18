@@ -1,83 +1,35 @@
-set(THREADS_PREFER_PTHREAD_FLAG ON)
-find_package(Threads REQUIRED)
-
-include_directories(
-    SYSTEM ${PROJECT_SOURCE_DIR}/third_party/mavlink/include
-)
-
 configure_file(version.h.in version.h)
 
-add_library(mavsdk
-    call_every_handler.cpp
-    connection.cpp
-    connection_result.cpp
-    curl_wrapper.cpp
-    system.cpp
-    system_impl.cpp
-    mavsdk.cpp
-    mavsdk_impl.cpp
-    global_include.cpp
-    http_loader.cpp
-    mavlink_channels.cpp
-    mavlink_commands.cpp
-    mavlink_mission_transfer.cpp
-    mavlink_parameters.cpp
-    mavlink_receiver.cpp
-    mavlink_statustext_handler.cpp
-    mavlink_message_handler.cpp
-    ping.cpp
-    plugin_impl_base.cpp
-    serial_connection.cpp
-    tcp_connection.cpp
-    timeout_handler.cpp
-    udp_connection.cpp
-    log.cpp
-    cli_arg.cpp
-    geometry.cpp
-    timesync.cpp
-)
-
-target_link_libraries(mavsdk
+target_sources(mavsdk
     PRIVATE
-    CURL::libcurl
-    Threads::Threads
+    ${CMAKE_CURRENT_SOURCE_DIR}/call_every_handler.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/connection.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/connection_result.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/curl_wrapper.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/system.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/system_impl.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/mavsdk.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/mavsdk_impl.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/global_include.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/http_loader.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/mavlink_channels.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/mavlink_commands.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/mavlink_mission_transfer.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/mavlink_parameters.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/mavlink_receiver.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/mavlink_statustext_handler.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/mavlink_message_handler.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/ping.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/plugin_impl_base.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/serial_connection.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/tcp_connection.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/timeout_handler.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/udp_connection.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/log.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/cli_arg.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/geometry.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/timesync.cpp
 )
-set_target_properties(mavsdk PROPERTIES
-    VERSION ${MAVSDK_VERSION_STRING}
-    SOVERSION ${MAVSDK_SOVERSION_STRING}
-)
-
-if (IOS)
-    target_link_libraries(mavsdk
-        PUBLIC
-        "-framework Foundation"
-        "-framework Security"
-    )
-endif()
-
-# Link to Windows networking lib.
-if (MSVC OR MINGW)
-    target_link_libraries(mavsdk
-        PRIVATE
-        ws2_32
-    )
-endif()
-
-if(ANDROID)
-    target_link_libraries(mavsdk
-        PRIVATE
-        log
-    )
-endif()
-
-if( (BUILD_STATIC_MAVSDK_SERVER AND ("${CMAKE_C_COMPILER_ID}" STREQUAL "GNU")) 
-    OR (${CMAKE_HOST_SYSTEM_PROCESSOR} MATCHES "(armv6|armv7)") )
-    target_link_libraries(mavsdk PRIVATE atomic)
-endif()
-
-set_target_properties(mavsdk
-    PROPERTIES COMPILE_FLAGS ${warnings}
-    )
 
 target_include_directories(mavsdk
     PUBLIC
@@ -87,11 +39,6 @@ target_include_directories(mavsdk
     $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
     )
 
-install(TARGETS mavsdk
-    EXPORT mavsdk-targets
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    )
 
 install(FILES
     connection_result.h
@@ -103,21 +50,3 @@ install(FILES
     DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/mavsdk"
 )
 
-list(APPEND UNIT_TEST_SOURCES
-    ${PROJECT_SOURCE_DIR}/core/global_include_test.cpp
-    ${PROJECT_SOURCE_DIR}/core/mavlink_channels_test.cpp
-    ${PROJECT_SOURCE_DIR}/core/unittests_main.cpp
-    # TODO: add this again
-    #${PROJECT_SOURCE_DIR}/core/http_loader_test.cpp
-    ${PROJECT_SOURCE_DIR}/core/timeout_handler_test.cpp
-    ${PROJECT_SOURCE_DIR}/core/call_every_handler_test.cpp
-    ${PROJECT_SOURCE_DIR}/core/curl_test.cpp
-    ${PROJECT_SOURCE_DIR}/core/cli_arg_test.cpp
-    ${PROJECT_SOURCE_DIR}/core/locked_queue_test.cpp
-    ${PROJECT_SOURCE_DIR}/core/safe_queue_test.cpp
-    ${PROJECT_SOURCE_DIR}/core/mavsdk_test.cpp
-    ${PROJECT_SOURCE_DIR}/core/mavlink_mission_transfer_test.cpp
-    ${PROJECT_SOURCE_DIR}/core/mavlink_statustext_handler_test.cpp
-    ${PROJECT_SOURCE_DIR}/core/geometry_test.cpp
-)
-set(UNIT_TEST_SOURCES ${UNIT_TEST_SOURCES} PARENT_SCOPE)

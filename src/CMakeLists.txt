@@ -7,58 +7,76 @@ cmake_policy(SET CMP0025 NEW)
 
 project(mavsdk)
 
-# ccache
-option(CCACHE "Use ccache if available" ON)
-find_program(CCACHE_PROGRAM ccache)
-if(CCACHE AND CCACHE_PROGRAM AND NOT DEFINED ENV{CCACHE_DISABLE})
-
-    get_filename_component(ccache_real_path ${CCACHE_PROGRAM} REALPATH)
-    get_filename_component(cxx_real_path ${CMAKE_CXX_COMPILER} REALPATH)
-    get_filename_component(cxx_abs_path ${CMAKE_CXX_COMPILER} ABSOLUTE)
-
-    if ("${ccache_real_path}" STREQUAL "${cxx_real_path}")
-        message(STATUS "ccache enabled via symlink (${cxx_abs_path} -> ${cxx_real_path})")
-    else()
-        message(STATUS "ccache enabled (export CCACHE_DISABLE=1 to disable)")
-        set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CCACHE_PROGRAM}")
-    endif()
-endif()
-
-option(BUILD_TESTS "Build tests" ON)
-option(CMAKE_POSITION_INDEPENDENT_CODE "Position independent code" ON)
-
+include(cmake/ccache.cmake)
 include(cmake/compiler_flags.cmake)
 
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules")
+option(BUILD_TESTS "Build tests" ON)
 
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules")
 find_package(Threads REQUIRED)
 find_package(CURL REQUIRED)
 find_package(tinyxml2 REQUIRED)
+
+set(THREADS_PREFER_PTHREAD_FLAG ON)
+find_package(Threads REQUIRED)
 
 if(BUILD_TESTS AND (IOS OR ANDROID))
     message(STATUS "Building for iOS or Android: forcing BUILD_TESTS to FALSE...")
     set(BUILD_TESTS OFF)
 endif()
 
-if(ANDROID)
-    set(lib_path "lib/android/${ANDROID_ABI}")
-elseif(IOS)
-    set(lib_path "lib/ios")
-else()
-    set(lib_path "lib")
+add_library(mavsdk
+    # source files are added in subdirectories.
+)
+
+target_link_libraries(mavsdk
+    PRIVATE
+    CURL::libcurl
+    Threads::Threads
+    JsonCpp::jsoncpp
+    tinyxml2::tinyxml2
+)
+
+if (IOS)
+    target_link_libraries(mavsdk
+        PUBLIC
+        "-framework Foundation"
+        "-framework Security"
+    )
+elseif (MSVC OR MINGW)
+    # Link to Windows networking lib.
+    target_link_libraries(mavsdk
+        PRIVATE
+        ws2_32
+    )
+elseif(ANDROID)
+    target_link_libraries(mavsdk
+        PRIVATE
+        log
+    )
 endif()
 
-set(mavsdk_install_include_dir "include/mavsdk")
-set(mavsdk_install_lib_dir ${lib_path})
+set_target_properties(mavsdk PROPERTIES
+    VERSION ${MAVSDK_VERSION_STRING}
+    SOVERSION ${MAVSDK_SOVERSION_STRING}
+)
+
+set_target_properties(mavsdk
+    PROPERTIES COMPILE_FLAGS ${warnings}
+)
+
+install(TARGETS mavsdk
+    EXPORT mavsdk-targets
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    )
 
 add_subdirectory(core)
 add_subdirectory(plugins)
 
-if (DEFINED EXTERNAL_DIR AND NOT EXTERNAL_DIR STREQUAL "")
-    add_subdirectory(${EXTERNAL_DIR}/plugins
-        ${CMAKE_CURRENT_BINARY_DIR}/${EXTERNAL_DIR}/plugins)
-    include_directories(${EXTERNAL_DIR})
-endif()
+include_directories(
+    SYSTEM ${PROJECT_SOURCE_DIR}/third_party/mavlink/include
+)
 
 if(BUILD_TESTS)
     enable_testing()
@@ -66,10 +84,24 @@ if(BUILD_TESTS)
 
     add_subdirectory(integration_tests)
 
-    if (DEFINED EXTERNAL_DIR AND NOT EXTERNAL_DIR STREQUAL "")
-        add_subdirectory(${EXTERNAL_DIR}/integration_tests
-            ${CMAKE_CURRENT_BINARY_DIR}/${EXTERNAL_DIR}/integration_tests)
-    endif()
+    list(APPEND UNIT_TEST_SOURCES
+        ${PROJECT_SOURCE_DIR}/core/global_include_test.cpp
+        ${PROJECT_SOURCE_DIR}/core/mavlink_channels_test.cpp
+        ${PROJECT_SOURCE_DIR}/core/unittests_main.cpp
+        # TODO: add this again
+        #${PROJECT_SOURCE_DIR}/core/http_loader_test.cpp
+        ${PROJECT_SOURCE_DIR}/core/timeout_handler_test.cpp
+        ${PROJECT_SOURCE_DIR}/core/call_every_handler_test.cpp
+        ${PROJECT_SOURCE_DIR}/core/curl_test.cpp
+        ${PROJECT_SOURCE_DIR}/core/cli_arg_test.cpp
+        ${PROJECT_SOURCE_DIR}/core/locked_queue_test.cpp
+        ${PROJECT_SOURCE_DIR}/core/safe_queue_test.cpp
+        ${PROJECT_SOURCE_DIR}/core/mavsdk_test.cpp
+        ${PROJECT_SOURCE_DIR}/core/mavlink_mission_transfer_test.cpp
+        ${PROJECT_SOURCE_DIR}/core/mavlink_statustext_handler_test.cpp
+        ${PROJECT_SOURCE_DIR}/core/geometry_test.cpp
+    )
+    set(UNIT_TEST_SOURCES ${UNIT_TEST_SOURCES} PARENT_SCOPE)
 
     include(cmake/unit_tests.cmake)
 endif()
@@ -77,6 +109,10 @@ endif()
 if (BUILD_MAVSDK_SERVER)
     message(STATUS "Building mavsdk server")
     add_subdirectory(mavsdk_server)
+
+    if(BUILD_STATIC_MAVSDK_SERVER AND ("${CMAKE_C_COMPILER_ID}" STREQUAL "GNU"))
+        target_link_libraries(mavsdk PRIVATE atomic)
+    endif()
 else()
     message(STATUS "BUILD_MAVSDK_SERVER not set: not building grpc mavsdk_server")
 endif()
