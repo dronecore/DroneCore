@@ -1,0 +1,25 @@
+#ifndef plugin_{{ plugin_name.lower_snake_case }}_h
+#define plugin_{{ plugin_name.lower_snake_case }}_h
+
+#import <Foundation/Foundation.h>
+
+@class MavsdkSwift2Impl;
+
+{% for enum in enums %}
+{{ enum }}
+{% endfor %}
+
+{% for struct in structs %}
+{{ struct }}
+{% endfor %}
+
+@interface MAVSDK{{ plugin_name.upper_camel_case }} : NSObject
+
+- (id)initWithMavsdkSwift2Impl:(MavsdkSwift2Impl*)mavsdkSwift2Impl;
+{% for method in methods -%}
+{{ method }}
+{% endfor %}
+
+@end
+
+#endif // plugin_{{ plugin_name.lower_snake_case }}_h
