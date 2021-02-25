@@ -1,18 +1,15 @@
 #pragma once
 
-#include "mavlink_include.h"
 #include "plugins/action/action.h"
 #include "plugin_impl_base.h"
-#include <atomic>
-#include <cstdint>
 
 namespace mavsdk {
 
 class ActionImpl : public PluginImplBase {
 public:
     explicit ActionImpl(System& system);
-    explicit ActionImpl(std::shared_ptr<System> system_ptr);
-    explicit ActionImpl(SystemImpl* system_impl_ptr);
+    explicit ActionImpl(std::shared_ptr<System> system);
+    explicit ActionImpl(SystemImpl* system_impl);
     ~ActionImpl();
 
     void init() override;
@@ -21,99 +18,161 @@ public:
     void enable() override;
     void disable() override;
 
-    Action::Result arm() const;
-    Action::Result disarm() const;
-    Action::Result terminate() const;
-    Action::Result kill() const;
-    Action::Result reboot() const;
-    Action::Result shutdown() const;
-    Action::Result takeoff() const;
-    Action::Result land() const;
-    Action::Result return_to_launch() const;
-    Action::Result goto_location(
-        const double latitude_deg,
-        const double longitude_deg,
-        const float altitude_amsl_m,
-        const float yaw_deg);
-    Action::Result do_orbit(
-        const float radius_m,
-        const float velocity_ms,
-        const Action::OrbitYawBehavior yaw_behavior,
-        const double latitude_deg,
-        const double longitude_deg,
-        const double absolute_altitude_m);
-    Action::Result transition_to_fixedwing() const;
-    Action::Result transition_to_multicopter() const;
 
-    void arm_async(const Action::ResultCallback& callback) const;
-    void disarm_async(const Action::ResultCallback& callback) const;
-    void terminate_async(const Action::ResultCallback& callback) const;
-    void kill_async(const Action::ResultCallback& callback) const;
-    void reboot_async(const Action::ResultCallback& callback) const;
-    void shutdown_async(const Action::ResultCallback& callback) const;
-    void takeoff_async(const Action::ResultCallback& callback) const;
-    void land_async(const Action::ResultCallback& callback) const;
-    void return_to_launch_async(const Action::ResultCallback& callback) const;
-    void goto_location_async(
-        const double latitude_deg,
-        const double longitude_deg,
-        const float altitude_amsl_m,
-        const float yaw_deg,
-        const Action::ResultCallback& callback);
-    void do_orbit_async(
-        const float radius_m,
-        const float velocity_ms,
-        const Action::OrbitYawBehavior yaw_behavior,
-        const double latitude_deg,
-        const double longitude_deg,
-        const double absolute_altitude_m,
-        const Action::ResultCallback& callback);
-    void transition_to_fixedwing_async(const Action::ResultCallback& callback) const;
-    void transition_to_multicopter_async(const Action::ResultCallback& callback) const;
 
-    void set_takeoff_altitude_async(
-        const float relative_altitude_m, const Action::ResultCallback& callback) const;
-    void get_takeoff_altitude_async(const Action::GetTakeoffAltitudeCallback& callback) const;
+    void arm_async(const Action::ResultCallback callback);
 
-    Action::Result set_takeoff_altitude(float relative_altitude_m) const;
-    std::pair<Action::Result, float> get_takeoff_altitude() const;
 
-    void
-    set_maximum_speed_async(const float speed_m_s, const Action::ResultCallback& callback) const;
-    void get_maximum_speed_async(const Action::GetMaximumSpeedCallback& callback) const;
 
-    Action::Result set_maximum_speed(float speed_m_s) const;
-    std::pair<Action::Result, float> get_maximum_speed() const;
+    Action::Result arm();
 
-    void set_return_to_launch_altitude_async(
-        const float relative_altitude_m, const Action::ResultCallback& callback) const;
-    void get_return_to_launch_altitude_async(
-        const Action::GetReturnToLaunchAltitudeCallback& callback) const;
 
-    Action::Result set_return_to_launch_altitude(const float relative_altitude_m) const;
-    std::pair<Action::Result, float> get_return_to_launch_altitude() const;
+
+    void disarm_async(const Action::ResultCallback callback);
+
+
+
+    Action::Result disarm();
+
+
+
+    void takeoff_async(const Action::ResultCallback callback);
+
+
+
+    Action::Result takeoff();
+
+
+
+    void land_async(const Action::ResultCallback callback);
+
+
+
+    Action::Result land();
+
+
+
+    void reboot_async(const Action::ResultCallback callback);
+
+
+
+    Action::Result reboot();
+
+
+
+    void shutdown_async(const Action::ResultCallback callback);
+
+
+
+    Action::Result shutdown();
+
+
+
+    void terminate_async(const Action::ResultCallback callback);
+
+
+
+    Action::Result terminate();
+
+
+
+    void kill_async(const Action::ResultCallback callback);
+
+
+
+    Action::Result kill();
+
+
+
+    void return_to_launch_async(const Action::ResultCallback callback);
+
+
+
+    Action::Result return_to_launch();
+
+
+
+    void goto_location_async(double latitude_deg, double longitude_deg, float absolute_altitude_m, float yaw_deg, const Action::ResultCallback callback);
+
+
+
+    Action::Result goto_location(double latitude_deg, double longitude_deg, float absolute_altitude_m, float yaw_deg);
+
+
+
+    void do_orbit_async(float radius_m, float velocity_ms, Action::OrbitYawBehavior yaw_behavior, double latitude_deg, double longitude_deg, double absolute_altitude_m, const Action::ResultCallback callback);
+
+
+
+    Action::Result do_orbit(float radius_m, float velocity_ms, Action::OrbitYawBehavior yaw_behavior, double latitude_deg, double longitude_deg, double absolute_altitude_m);
+
+
+
+    void transition_to_fixedwing_async(const Action::ResultCallback callback);
+
+
+
+    Action::Result transition_to_fixedwing();
+
+
+
+    void transition_to_multicopter_async(const Action::ResultCallback callback);
+
+
+
+    Action::Result transition_to_multicopter();
+
+
+
+    void get_takeoff_altitude_async(const Action::GetTakeoffAltitudeCallback callback);
+
+
+
+    std::pair<Action::Result, float> get_takeoff_altitude();
+
+
+
+    void set_takeoff_altitude_async(float altitude, const Action::ResultCallback callback);
+
+
+
+    Action::Result set_takeoff_altitude(float altitude);
+
+
+
+    void get_maximum_speed_async(const Action::GetMaximumSpeedCallback callback);
+
+
+
+    std::pair<Action::Result, float> get_maximum_speed();
+
+
+
+    void set_maximum_speed_async(float speed, const Action::ResultCallback callback);
+
+
+
+    Action::Result set_maximum_speed(float speed);
+
+
+
+    void get_return_to_launch_altitude_async(const Action::GetReturnToLaunchAltitudeCallback callback);
+
+
+
+    std::pair<Action::Result, float> get_return_to_launch_altitude();
+
+
+
+    void set_return_to_launch_altitude_async(float relative_altitude_m, const Action::ResultCallback callback);
+
+
+
+    Action::Result set_return_to_launch_altitude(float relative_altitude_m);
+
+
 
 private:
-    Action::Result disarming_allowed() const;
-    Action::Result taking_off_allowed() const;
-
-    void process_extended_sys_state(const mavlink_message_t& message);
-
-    static Action::Result action_result_from_command_result(MavlinkCommandSender::Result result);
-
-    void command_result_callback(
-        MavlinkCommandSender::Result command_result, const Action::ResultCallback& callback) const;
-
-    std::atomic<bool> _in_air_state_known{false};
-    std::atomic<bool> _in_air{false};
-
-    std::atomic<bool> _vtol_transition_support_known{false};
-    std::atomic<bool> _vtol_transition_possible{false};
-
-    static constexpr uint8_t VEHICLE_MODE_FLAG_CUSTOM_MODE_ENABLED = 1;
-    static constexpr auto TAKEOFF_ALT_PARAM = "MIS_TAKEOFF_ALT";
-    static constexpr auto MAX_SPEED_PARAM = "MPC_XY_CRUISE";
-    static constexpr auto RTL_RETURN_ALTITUDE_PARAM = "RTL_RETURN_ALT";
 };
 
 } // namespace mavsdk
