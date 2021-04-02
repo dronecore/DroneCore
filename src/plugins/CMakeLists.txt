@@ -3,6 +3,16 @@ include_directories(
     SYSTEM  ${PROJECT_SOURCE_DIR}/third_party/mavlink/include
 )
 
+if(HUNTER_ENABLED)
+    set(JSONCPP_TARGET_NAME jsoncpp)
+    set(JSONCPP_LIB_NAME jsoncpp_lib_static)
+    set(TINYXML2_LIB_NAME tinyxml2)
+else()
+    set(JSONCPP_TARGET_NAME JsonCpp)
+    set(JSONCPP_LIB_NAME JsonCpp::jsoncpp)
+    set(TINYXML2_LIB_NAME tinyxml2::tinyxml2)
+endif()
+
 add_subdirectory(action)
 add_subdirectory(calibration)
 add_subdirectory(camera)

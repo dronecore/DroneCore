@@ -1,5 +1,11 @@
 cmake_minimum_required(VERSION 3.10.2)
 
+include("src/cmake/HunterGate.cmake")
+HunterGate(
+    URL "https://github.com/ruslo/hunter/archive/v0.23.214.tar.gz"
+    SHA1 "e14bc153a7f16d6a5eeec845fb0283c8fad8c358"
+)
+
 execute_process(
     COMMAND git describe --abbrev=8 --dirty --always --tags
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
@@ -49,7 +55,7 @@ install(EXPORT mavsdk-targets
 # For the build tree
 configure_file(MAVSDKConfig.cmake.in
     "${PROJECT_BINARY_DIR}/MAVSDKConfig.cmake" @ONLY)
-# For the install tree
+# For the install treeNABLED
 configure_file(MAVSDKConfig.cmake.in
     "${PROJECT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/MAVSDKConfig.cmake" @ONLY)
 
