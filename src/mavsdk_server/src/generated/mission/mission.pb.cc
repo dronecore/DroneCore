@@ -314,7 +314,9 @@ constexpr MissionItem::MissionItem(
 
   , camera_photo_interval_s_(0)
   , loiter_time_s_(0)
-  , acceptance_radius_m_(0){}
+  , acceptance_radius_m_(0)
+  , vehicle_action_(0)
+{}
 struct MissionItemDefaultTypeInternal {
   constexpr MissionItemDefaultTypeInternal()
     : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
@@ -367,7 +369,7 @@ PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT MissionResultDefaultTypeInterna
 }  // namespace rpc
 }  // namespace mavsdk
 static ::PROTOBUF_NAMESPACE_ID::Metadata file_level_metadata_mission_2fmission_2eproto[28];
-static const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* file_level_enum_descriptors_mission_2fmission_2eproto[2];
+static const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* file_level_enum_descriptors_mission_2fmission_2eproto[3];
 static constexpr ::PROTOBUF_NAMESPACE_ID::ServiceDescriptor const** file_level_service_descriptors_mission_2fmission_2eproto = nullptr;
 
 const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_mission_2fmission_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
@@ -525,6 +527,7 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_mission_2fmission_2eproto::off
   PROTOBUF_FIELD_OFFSET(::mavsdk::rpc::mission::MissionItem, loiter_time_s_),
   PROTOBUF_FIELD_OFFSET(::mavsdk::rpc::mission::MissionItem, camera_photo_interval_s_),
   PROTOBUF_FIELD_OFFSET(::mavsdk::rpc::mission::MissionItem, acceptance_radius_m_),
+  PROTOBUF_FIELD_OFFSET(::mavsdk::rpc::mission::MissionItem, vehicle_action_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::mavsdk::rpc::mission::MissionPlan, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -572,9 +575,9 @@ static const ::PROTOBUF_NAMESPACE_ID::internal::MigrationSchema schemas[] PROTOB
   { 126, -1, sizeof(::mavsdk::rpc::mission::SetReturnToLaunchAfterMissionRequest)},
   { 132, -1, sizeof(::mavsdk::rpc::mission::SetReturnToLaunchAfterMissionResponse)},
   { 138, -1, sizeof(::mavsdk::rpc::mission::MissionItem)},
-  { 154, -1, sizeof(::mavsdk::rpc::mission::MissionPlan)},
-  { 160, -1, sizeof(::mavsdk::rpc::mission::MissionProgress)},
-  { 167, -1, sizeof(::mavsdk::rpc::mission::MissionResult)},
+  { 155, -1, sizeof(::mavsdk::rpc::mission::MissionPlan)},
+  { 161, -1, sizeof(::mavsdk::rpc::mission::MissionProgress)},
+  { 168, -1, sizeof(::mavsdk::rpc::mission::MissionResult)},
 };
 
 static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] = {
@@ -650,7 +653,7 @@ const char descriptor_table_protodef_mission_2fmission_2eproto[] PROTOBUF_SECTIO
   "etReturnToLaunchAfterMissionRequest\022\016\n\006e"
   "nable\030\001 \001(\010\"b\n%SetReturnToLaunchAfterMis"
   "sionResponse\0229\n\016mission_result\030\001 \001(\0132!.m"
-  "avsdk.rpc.mission.MissionResult\"\251\005\n\013Miss"
+  "avsdk.rpc.mission.MissionResult\"\232\007\n\013Miss"
   "ionItem\022(\n\014latitude_deg\030\001 \001(\001B\022\202\265\030\003NaN\211\265"
   "\030H\257\274\232\362\327z>\022)\n\rlongitude_deg\030\002 \001(\001B\022\202\265\030\003Na"
   "N\211\265\030H\257\274\232\362\327z>\022$\n\023relative_altitude_m\030\003 \001("
@@ -662,71 +665,77 @@ const char descriptor_table_protodef_mission_2fmission_2eproto[] PROTOBUF_SECTIO
   "mission.MissionItem.CameraAction\022\036\n\rloit"
   "er_time_s\030\t \001(\002B\007\202\265\030\003NaN\022(\n\027camera_photo"
   "_interval_s\030\n \001(\001B\007\202\265\030\0031.0\022$\n\023acceptance"
-  "_radius_m\030\013 \001(\002B\007\202\265\030\003NaN\"\320\001\n\014CameraActio"
-  "n\022\026\n\022CAMERA_ACTION_NONE\020\000\022\034\n\030CAMERA_ACTI"
-  "ON_TAKE_PHOTO\020\001\022&\n\"CAMERA_ACTION_START_P"
-  "HOTO_INTERVAL\020\002\022%\n!CAMERA_ACTION_STOP_PH"
-  "OTO_INTERVAL\020\003\022\035\n\031CAMERA_ACTION_START_VI"
-  "DEO\020\004\022\034\n\030CAMERA_ACTION_STOP_VIDEO\020\005\"E\n\013M"
-  "issionPlan\0226\n\rmission_items\030\001 \003(\0132\037.mavs"
-  "dk.rpc.mission.MissionItem\"1\n\017MissionPro"
-  "gress\022\017\n\007current\030\001 \001(\005\022\r\n\005total\030\002 \001(\005\"\231\003"
-  "\n\rMissionResult\0228\n\006result\030\001 \001(\0162(.mavsdk"
-  ".rpc.mission.MissionResult.Result\022\022\n\nres"
-  "ult_str\030\002 \001(\t\"\271\002\n\006Result\022\022\n\016RESULT_UNKNO"
-  "WN\020\000\022\022\n\016RESULT_SUCCESS\020\001\022\020\n\014RESULT_ERROR"
-  "\020\002\022!\n\035RESULT_TOO_MANY_MISSION_ITEMS\020\003\022\017\n"
-  "\013RESULT_BUSY\020\004\022\022\n\016RESULT_TIMEOUT\020\005\022\033\n\027RE"
-  "SULT_INVALID_ARGUMENT\020\006\022\026\n\022RESULT_UNSUPP"
-  "ORTED\020\007\022\037\n\033RESULT_NO_MISSION_AVAILABLE\020\010"
-  "\022\"\n\036RESULT_UNSUPPORTED_MISSION_CMD\020\013\022\035\n\031"
-  "RESULT_TRANSFER_CANCELLED\020\014\022\024\n\020RESULT_NO"
-  "_SYSTEM\020\r2\315\013\n\016MissionService\022f\n\rUploadMi"
-  "ssion\022(.mavsdk.rpc.mission.UploadMission"
-  "Request\032).mavsdk.rpc.mission.UploadMissi"
-  "onResponse\"\000\022|\n\023CancelMissionUpload\022..ma"
-  "vsdk.rpc.mission.CancelMissionUploadRequ"
-  "est\032/.mavsdk.rpc.mission.CancelMissionUp"
-  "loadResponse\"\004\200\265\030\001\022l\n\017DownloadMission\022*."
-  "mavsdk.rpc.mission.DownloadMissionReques"
-  "t\032+.mavsdk.rpc.mission.DownloadMissionRe"
-  "sponse\"\000\022\202\001\n\025CancelMissionDownload\0220.mav"
-  "sdk.rpc.mission.CancelMissionDownloadReq"
-  "uest\0321.mavsdk.rpc.mission.CancelMissionD"
-  "ownloadResponse\"\004\200\265\030\001\022c\n\014StartMission\022\'."
-  "mavsdk.rpc.mission.StartMissionRequest\032("
-  ".mavsdk.rpc.mission.StartMissionResponse"
-  "\"\000\022c\n\014PauseMission\022\'.mavsdk.rpc.mission."
-  "PauseMissionRequest\032(.mavsdk.rpc.mission"
-  ".PauseMissionResponse\"\000\022c\n\014ClearMission\022"
-  "\'.mavsdk.rpc.mission.ClearMissionRequest"
-  "\032(.mavsdk.rpc.mission.ClearMissionRespon"
-  "se\"\000\022~\n\025SetCurrentMissionItem\0220.mavsdk.r"
-  "pc.mission.SetCurrentMissionItemRequest\032"
-  "1.mavsdk.rpc.mission.SetCurrentMissionIt"
-  "emResponse\"\000\022v\n\021IsMissionFinished\022,.mavs"
-  "dk.rpc.mission.IsMissionFinishedRequest\032"
-  "-.mavsdk.rpc.mission.IsMissionFinishedRe"
-  "sponse\"\004\200\265\030\001\022\200\001\n\030SubscribeMissionProgres"
-  "s\0223.mavsdk.rpc.mission.SubscribeMissionP"
-  "rogressRequest\032+.mavsdk.rpc.mission.Miss"
-  "ionProgressResponse\"\0000\001\022\232\001\n\035GetReturnToL"
-  "aunchAfterMission\0228.mavsdk.rpc.mission.G"
-  "etReturnToLaunchAfterMissionRequest\0329.ma"
-  "vsdk.rpc.mission.GetReturnToLaunchAfterM"
-  "issionResponse\"\004\200\265\030\001\022\232\001\n\035SetReturnToLaun"
-  "chAfterMission\0228.mavsdk.rpc.mission.SetR"
-  "eturnToLaunchAfterMissionRequest\0329.mavsd"
-  "k.rpc.mission.SetReturnToLaunchAfterMiss"
-  "ionResponse\"\004\200\265\030\001B!\n\021io.mavsdk.missionB\014"
-  "MissionProtob\006proto3"
+  "_radius_m\030\013 \001(\002B\007\202\265\030\003NaN\022E\n\016vehicle_acti"
+  "on\030\014 \001(\0162-.mavsdk.rpc.mission.MissionIte"
+  "m.VehicleAction\"\320\001\n\014CameraAction\022\026\n\022CAME"
+  "RA_ACTION_NONE\020\000\022\034\n\030CAMERA_ACTION_TAKE_P"
+  "HOTO\020\001\022&\n\"CAMERA_ACTION_START_PHOTO_INTE"
+  "RVAL\020\002\022%\n!CAMERA_ACTION_STOP_PHOTO_INTER"
+  "VAL\020\003\022\035\n\031CAMERA_ACTION_START_VIDEO\020\004\022\034\n\030"
+  "CAMERA_ACTION_STOP_VIDEO\020\005\"\247\001\n\rVehicleAc"
+  "tion\022\027\n\023VEHICLE_ACTION_NONE\020\000\022\032\n\026VEHICLE"
+  "_ACTION_TAKEOFF\020\001\022\027\n\023VEHICLE_ACTION_LAND"
+  "\020\002\022#\n\037VEHICLE_ACTION_TRANSITION_TO_FW\020\003\022"
+  "#\n\037VEHICLE_ACTION_TRANSITION_TO_MC\020\004\"E\n\013"
+  "MissionPlan\0226\n\rmission_items\030\001 \003(\0132\037.mav"
+  "sdk.rpc.mission.MissionItem\"1\n\017MissionPr"
+  "ogress\022\017\n\007current\030\001 \001(\005\022\r\n\005total\030\002 \001(\005\"\231"
+  "\003\n\rMissionResult\0228\n\006result\030\001 \001(\0162(.mavsd"
+  "k.rpc.mission.MissionResult.Result\022\022\n\nre"
+  "sult_str\030\002 \001(\t\"\271\002\n\006Result\022\022\n\016RESULT_UNKN"
+  "OWN\020\000\022\022\n\016RESULT_SUCCESS\020\001\022\020\n\014RESULT_ERRO"
+  "R\020\002\022!\n\035RESULT_TOO_MANY_MISSION_ITEMS\020\003\022\017"
+  "\n\013RESULT_BUSY\020\004\022\022\n\016RESULT_TIMEOUT\020\005\022\033\n\027R"
+  "ESULT_INVALID_ARGUMENT\020\006\022\026\n\022RESULT_UNSUP"
+  "PORTED\020\007\022\037\n\033RESULT_NO_MISSION_AVAILABLE\020"
+  "\010\022\"\n\036RESULT_UNSUPPORTED_MISSION_CMD\020\013\022\035\n"
+  "\031RESULT_TRANSFER_CANCELLED\020\014\022\024\n\020RESULT_N"
+  "O_SYSTEM\020\r2\315\013\n\016MissionService\022f\n\rUploadM"
+  "ission\022(.mavsdk.rpc.mission.UploadMissio"
+  "nRequest\032).mavsdk.rpc.mission.UploadMiss"
+  "ionResponse\"\000\022|\n\023CancelMissionUpload\022..m"
+  "avsdk.rpc.mission.CancelMissionUploadReq"
+  "uest\032/.mavsdk.rpc.mission.CancelMissionU"
+  "ploadResponse\"\004\200\265\030\001\022l\n\017DownloadMission\022*"
+  ".mavsdk.rpc.mission.DownloadMissionReque"
+  "st\032+.mavsdk.rpc.mission.DownloadMissionR"
+  "esponse\"\000\022\202\001\n\025CancelMissionDownload\0220.ma"
+  "vsdk.rpc.mission.CancelMissionDownloadRe"
+  "quest\0321.mavsdk.rpc.mission.CancelMission"
+  "DownloadResponse\"\004\200\265\030\001\022c\n\014StartMission\022\'"
+  ".mavsdk.rpc.mission.StartMissionRequest\032"
+  "(.mavsdk.rpc.mission.StartMissionRespons"
+  "e\"\000\022c\n\014PauseMission\022\'.mavsdk.rpc.mission"
+  ".PauseMissionRequest\032(.mavsdk.rpc.missio"
+  "n.PauseMissionResponse\"\000\022c\n\014ClearMission"
+  "\022\'.mavsdk.rpc.mission.ClearMissionReques"
+  "t\032(.mavsdk.rpc.mission.ClearMissionRespo"
+  "nse\"\000\022~\n\025SetCurrentMissionItem\0220.mavsdk."
+  "rpc.mission.SetCurrentMissionItemRequest"
+  "\0321.mavsdk.rpc.mission.SetCurrentMissionI"
+  "temResponse\"\000\022v\n\021IsMissionFinished\022,.mav"
+  "sdk.rpc.mission.IsMissionFinishedRequest"
+  "\032-.mavsdk.rpc.mission.IsMissionFinishedR"
+  "esponse\"\004\200\265\030\001\022\200\001\n\030SubscribeMissionProgre"
+  "ss\0223.mavsdk.rpc.mission.SubscribeMission"
+  "ProgressRequest\032+.mavsdk.rpc.mission.Mis"
+  "sionProgressResponse\"\0000\001\022\232\001\n\035GetReturnTo"
+  "LaunchAfterMission\0228.mavsdk.rpc.mission."
+  "GetReturnToLaunchAfterMissionRequest\0329.m"
+  "avsdk.rpc.mission.GetReturnToLaunchAfter"
+  "MissionResponse\"\004\200\265\030\001\022\232\001\n\035SetReturnToLau"
+  "nchAfterMission\0228.mavsdk.rpc.mission.Set"
+  "ReturnToLaunchAfterMissionRequest\0329.mavs"
+  "dk.rpc.mission.SetReturnToLaunchAfterMis"
+  "sionResponse\"\004\200\265\030\001B!\n\021io.mavsdk.missionB"
+  "\014MissionProtob\006proto3"
   ;
 static const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable*const descriptor_table_mission_2fmission_2eproto_deps[1] = {
   &::descriptor_table_mavsdk_5foptions_2eproto,
 };
 static ::PROTOBUF_NAMESPACE_ID::internal::once_flag descriptor_table_mission_2fmission_2eproto_once;
 const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_mission_2fmission_2eproto = {
-  false, false, 4420, descriptor_table_protodef_mission_2fmission_2eproto, "mission/mission.proto", 
+  false, false, 4661, descriptor_table_protodef_mission_2fmission_2eproto, "mission/mission.proto", 
   &descriptor_table_mission_2fmission_2eproto_once, descriptor_table_mission_2fmission_2eproto_deps, 1, 28,
   schemas, file_default_instances, TableStruct_mission_2fmission_2eproto::offsets,
   file_level_metadata_mission_2fmission_2eproto, file_level_enum_descriptors_mission_2fmission_2eproto, file_level_service_descriptors_mission_2fmission_2eproto,
@@ -771,9 +780,36 @@ constexpr MissionItem_CameraAction MissionItem::CameraAction_MIN;
 constexpr MissionItem_CameraAction MissionItem::CameraAction_MAX;
 constexpr int MissionItem::CameraAction_ARRAYSIZE;
 #endif  // (__cplusplus < 201703) && (!defined(_MSC_VER) || _MSC_VER >= 1900)
-const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* MissionResult_Result_descriptor() {
+const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* MissionItem_VehicleAction_descriptor() {
   ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&descriptor_table_mission_2fmission_2eproto);
   return file_level_enum_descriptors_mission_2fmission_2eproto[1];
+}
+bool MissionItem_VehicleAction_IsValid(int value) {
+  switch (value) {
+    case 0:
+    case 1:
+    case 2:
+    case 3:
+    case 4:
+      return true;
+    default:
+      return false;
+  }
+}
+
+#if (__cplusplus < 201703) && (!defined(_MSC_VER) || _MSC_VER >= 1900)
+constexpr MissionItem_VehicleAction MissionItem::VEHICLE_ACTION_NONE;
+constexpr MissionItem_VehicleAction MissionItem::VEHICLE_ACTION_TAKEOFF;
+constexpr MissionItem_VehicleAction MissionItem::VEHICLE_ACTION_LAND;
+constexpr MissionItem_VehicleAction MissionItem::VEHICLE_ACTION_TRANSITION_TO_FW;
+constexpr MissionItem_VehicleAction MissionItem::VEHICLE_ACTION_TRANSITION_TO_MC;
+constexpr MissionItem_VehicleAction MissionItem::VehicleAction_MIN;
+constexpr MissionItem_VehicleAction MissionItem::VehicleAction_MAX;
+constexpr int MissionItem::VehicleAction_ARRAYSIZE;
+#endif  // (__cplusplus < 201703) && (!defined(_MSC_VER) || _MSC_VER >= 1900)
+const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* MissionResult_Result_descriptor() {
+  ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&descriptor_table_mission_2fmission_2eproto);
+  return file_level_enum_descriptors_mission_2fmission_2eproto[2];
 }
 bool MissionResult_Result_IsValid(int value) {
   switch (value) {
@@ -5380,16 +5416,16 @@ MissionItem::MissionItem(const MissionItem& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   ::memcpy(&latitude_deg_, &from.latitude_deg_,
-    static_cast<size_t>(reinterpret_cast<char*>(&acceptance_radius_m_) -
-    reinterpret_cast<char*>(&latitude_deg_)) + sizeof(acceptance_radius_m_));
+    static_cast<size_t>(reinterpret_cast<char*>(&vehicle_action_) -
+    reinterpret_cast<char*>(&latitude_deg_)) + sizeof(vehicle_action_));
   // @@protoc_insertion_point(copy_constructor:mavsdk.rpc.mission.MissionItem)
 }
 
 void MissionItem::SharedCtor() {
 ::memset(reinterpret_cast<char*>(this) + static_cast<size_t>(
     reinterpret_cast<char*>(&latitude_deg_) - reinterpret_cast<char*>(this)),
-    0, static_cast<size_t>(reinterpret_cast<char*>(&acceptance_radius_m_) -
-    reinterpret_cast<char*>(&latitude_deg_)) + sizeof(acceptance_radius_m_));
+    0, static_cast<size_t>(reinterpret_cast<char*>(&vehicle_action_) -
+    reinterpret_cast<char*>(&latitude_deg_)) + sizeof(vehicle_action_));
 }
 
 MissionItem::~MissionItem() {
@@ -5419,8 +5455,8 @@ void MissionItem::Clear() {
   (void) cached_has_bits;
 
   ::memset(&latitude_deg_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&acceptance_radius_m_) -
-      reinterpret_cast<char*>(&latitude_deg_)) + sizeof(acceptance_radius_m_));
+      reinterpret_cast<char*>(&vehicle_action_) -
+      reinterpret_cast<char*>(&latitude_deg_)) + sizeof(vehicle_action_));
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -5507,6 +5543,14 @@ const char* MissionItem::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID
         if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 93)) {
           acceptance_radius_m_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<float>(ptr);
           ptr += sizeof(float);
+        } else goto handle_unusual;
+        continue;
+      // .mavsdk.rpc.mission.MissionItem.VehicleAction vehicle_action = 12;
+      case 12:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 96)) {
+          ::PROTOBUF_NAMESPACE_ID::uint64 val = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+          _internal_set_vehicle_action(static_cast<::mavsdk::rpc::mission::MissionItem_VehicleAction>(val));
         } else goto handle_unusual;
         continue;
       default: {
@@ -5604,6 +5648,13 @@ failure:
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteFloatToArray(11, this->_internal_acceptance_radius_m(), target);
   }
 
+  // .mavsdk.rpc.mission.MissionItem.VehicleAction vehicle_action = 12;
+  if (this->vehicle_action() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteEnumToArray(
+      12, this->_internal_vehicle_action(), target);
+  }
+
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
@@ -5676,6 +5727,12 @@ size_t MissionItem::ByteSizeLong() const {
     total_size += 1 + 4;
   }
 
+  // .mavsdk.rpc.mission.MissionItem.VehicleAction vehicle_action = 12;
+  if (this->vehicle_action() != 0) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::EnumSize(this->_internal_vehicle_action());
+  }
+
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     return ::PROTOBUF_NAMESPACE_ID::internal::ComputeUnknownFieldsSize(
         _internal_metadata_, total_size, &_cached_size_);
@@ -5740,6 +5797,9 @@ void MissionItem::MergeFrom(const MissionItem& from) {
   if (!(from.acceptance_radius_m() <= 0 && from.acceptance_radius_m() >= 0)) {
     _internal_set_acceptance_radius_m(from._internal_acceptance_radius_m());
   }
+  if (from.vehicle_action() != 0) {
+    _internal_set_vehicle_action(from._internal_vehicle_action());
+  }
 }
 
 void MissionItem::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
@@ -5764,8 +5824,8 @@ void MissionItem::InternalSwap(MissionItem* other) {
   using std::swap;
   _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(MissionItem, acceptance_radius_m_)
-      + sizeof(MissionItem::acceptance_radius_m_)
+      PROTOBUF_FIELD_OFFSET(MissionItem, vehicle_action_)
+      + sizeof(MissionItem::vehicle_action_)
       - PROTOBUF_FIELD_OFFSET(MissionItem, latitude_deg_)>(
           reinterpret_cast<char*>(&latitude_deg_),
           reinterpret_cast<char*>(&other->latitude_deg_));

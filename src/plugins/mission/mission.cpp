@@ -136,6 +136,25 @@ std::ostream& operator<<(std::ostream& str, Mission::MissionItem::CameraAction c
             return str << "Unknown";
     }
 }
+
+std::ostream&
+operator<<(std::ostream& str, Mission::MissionItem::VehicleAction const& vehicle_action)
+{
+    switch (vehicle_action) {
+        case Mission::MissionItem::VehicleAction::None:
+            return str << "None";
+        case Mission::MissionItem::VehicleAction::Takeoff:
+            return str << "Takeoff";
+        case Mission::MissionItem::VehicleAction::Land:
+            return str << "Land";
+        case Mission::MissionItem::VehicleAction::TransitionToFw:
+            return str << "Transition To Fw";
+        case Mission::MissionItem::VehicleAction::TransitionToMc:
+            return str << "Transition To Mc";
+        default:
+            return str << "Unknown";
+    }
+}
 bool operator==(const Mission::MissionItem& lhs, const Mission::MissionItem& rhs)
 {
     return ((std::isnan(rhs.latitude_deg) && std::isnan(lhs.latitude_deg)) ||
@@ -157,7 +176,8 @@ bool operator==(const Mission::MissionItem& lhs, const Mission::MissionItem& rhs
            ((std::isnan(rhs.camera_photo_interval_s) && std::isnan(lhs.camera_photo_interval_s)) ||
             rhs.camera_photo_interval_s == lhs.camera_photo_interval_s) &&
            ((std::isnan(rhs.acceptance_radius_m) && std::isnan(lhs.acceptance_radius_m)) ||
-            rhs.acceptance_radius_m == lhs.acceptance_radius_m);
+            rhs.acceptance_radius_m == lhs.acceptance_radius_m) &&
+           (rhs.vehicle_action == lhs.vehicle_action);
 }
 
 std::ostream& operator<<(std::ostream& str, Mission::MissionItem const& mission_item)
@@ -175,6 +195,7 @@ std::ostream& operator<<(std::ostream& str, Mission::MissionItem const& mission_
     str << "    loiter_time_s: " << mission_item.loiter_time_s << '\n';
     str << "    camera_photo_interval_s: " << mission_item.camera_photo_interval_s << '\n';
     str << "    acceptance_radius_m: " << mission_item.acceptance_radius_m << '\n';
+    str << "    vehicle_action: " << mission_item.vehicle_action << '\n';
     str << '}';
     return str;
 }
